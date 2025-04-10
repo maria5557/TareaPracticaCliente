@@ -2,13 +2,11 @@ package com.example.client.entity;
 
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Data
 @DynamoDBDocument
 public class Client extends MainTableEntity{
 

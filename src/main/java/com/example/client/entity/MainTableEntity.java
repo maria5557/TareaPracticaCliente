@@ -1,15 +1,14 @@
 package com.example.client.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @DynamoDBTable(tableName = "MainTable")
 public class MainTableEntity {
 
