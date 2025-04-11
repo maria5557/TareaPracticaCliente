@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -13,8 +14,10 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    // Método para guardar o crear un cliente
     public Client saveClient(Client client) {
+        client.setPk("clientEntity");
+        client.setSk("documentID#" + client.getCifNifNie());
+        client.setId(UUID.randomUUID().toString());
         return clientRepository.save(client);
     }
 

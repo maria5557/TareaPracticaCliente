@@ -16,8 +16,6 @@ public class ClientRepository  {
 
     private final DynamoDBMapper dynamoDBMapper;
 
-
-    // Método para guardar o actualizar un cliente
     public Client save(Client client) {
         dynamoDBMapper.save(client);
         return client;

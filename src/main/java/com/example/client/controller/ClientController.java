@@ -7,6 +7,7 @@ import com.example.client.mappers.ClientMapper;
 import com.example.client.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Pattern;
@@ -25,10 +26,15 @@ public class ClientController {
     // Endpoint para crear un cliente
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClientDTO createClient(@RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+
         Client savedClient = clientService.saveClient(ClientMapper.INSTANCE.clientDTOToClient(clientDTO));
-        return ClientMapper.INSTANCE.clientToClientDTO(savedClient); // Convertimos la entidad a DTO antes de devolverlo
+        return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(savedClient));
     }
+
+
+
+    /*
 
     // Endpoint para obtener un cliente por ID con opción de "simpleOutput"
     @GetMapping("/{id}")
@@ -71,5 +77,7 @@ public class ClientController {
         Client client = clientService.findClientByEmail(email);
         return client != null ? ClientMapper.INSTANCE.clientToClientDTO(client) : null;
     }
+
+     */
 
 }
