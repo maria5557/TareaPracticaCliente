@@ -1,7 +1,6 @@
 package com.example.client.entity;
 
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

@@ -1,8 +1,9 @@
 package com.example.client.controller;
 
-
 import com.example.client.dto.ClientDTO;
+import com.example.client.dto.MerchantDTO;
 import com.example.client.entity.Client;
+import com.example.client.feign.MerchantClient;
 import com.example.client.mappers.ClientMapper;
 import com.example.client.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class ClientController {
 
     private final ClientService clientService;
+    private final MerchantClient merchantClient;
+
 
     // Endpoint para crear un cliente
     @PostMapping
@@ -114,6 +117,25 @@ public class ClientController {
 
         // Retornamos el cliente actualizado como respuesta
         return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(updatedClient));
+    }
+
+    @GetMapping("/merchant/{merchantId}")
+    public ResponseEntity<Void> checkMerchantExists(@PathVariable String merchantId) {
+        try {
+            // Llamada al microservicio de merchant para obtener el merchant por ID
+            MerchantDTO merchant = merchantClient.findMerchantById(merchantId);
+
+            // Si el merchant existe, devolvemos 200 OK
+            if (merchant != null) {
+                return ResponseEntity.ok().build();
+            } else {
+                // Si el merchant no existe, devolvemos 404 Not Found
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }
