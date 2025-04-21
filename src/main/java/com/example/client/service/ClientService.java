@@ -14,12 +14,19 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    public Client saveClient(Client client) {
+    public Client createClient(Client client) {
         client.setPk("clientEntity");
         client.setSk("documentID#" + client.getCifNifNie());
         client.setId(UUID.randomUUID().toString());
         return clientRepository.save(client);
     }
+
+    public Client saveClient(Client client) {
+        client.setPk("clientEntity");
+        client.setSk("documentID#" + client.getCifNifNie());
+        return clientRepository.save(client);
+    }
+
 
     // Método para obtener un cliente por ID con opción de "simpleOutput"
     public Client getClientById(String id) {

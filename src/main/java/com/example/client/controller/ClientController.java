@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,7 +30,7 @@ public class ClientController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
 
-        Client savedClient = clientService.saveClient(ClientMapper.INSTANCE.clientDTOToClient(clientDTO));
+        Client savedClient = clientService.createClient(ClientMapper.INSTANCE.clientDTOToClient(clientDTO));
         return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(savedClient));
     }
 
@@ -89,5 +88,32 @@ public class ClientController {
         return client != null ? ResponseEntity.ok(clientDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    // Endpoint para modificar un cliente existente
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientDTO> updateClient(
+            @PathVariable String id,
+            @RequestBody @Valid ClientDTO clientDTO) {
+
+        // Buscamos el cliente en la base de datos
+        Client existingClient = clientService.getClientById(id);
+
+        if (existingClient == null) {
+            // Si no existe el cliente, retornamos un 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Actualizamos los campos del cliente con los nuevos datos del DTO
+        existingClient.setName(clientDTO.getName());
+        existingClient.setSurname(clientDTO.getSurname());
+        existingClient.setCifNifNie(clientDTO.getCifNifNie());
+        existingClient.setPhone(clientDTO.getPhone());
+        existingClient.setEmail(clientDTO.getEmail());
+
+        // Guardamos el cliente actualizado
+        Client updatedClient = clientService.saveClient(existingClient);
+
+        // Retornamos el cliente actualizado como respuesta
+        return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(updatedClient));
+    }
 
 }
