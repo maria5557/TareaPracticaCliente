@@ -1,13 +1,17 @@
 package com.example.client.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.example.client.entity.Client;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,7 +27,18 @@ public class ClientRepository  {
 
     // Método para encontrar un cliente por su ID
     public Client findById(String id) {
-        return dynamoDBMapper.load(Client.class, id);
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":id", new AttributeValue().withS(id));
+
+        DynamoDBQueryExpression<Client> queryExpression = new DynamoDBQueryExpression<Client>()
+                .withIndexName("IdIndex") // Especificamos el índice global secundario "gIndex2"
+                .withConsistentRead(false)
+                .withKeyConditionExpression("id = :id")
+                .withExpressionAttributeValues(eav);
+
+        List<Client> clients = dynamoDBMapper.query(Client.class, queryExpression);
+
+        return clients.isEmpty() ? null : clients.get(0);
     }
 
     // Método para buscar clientes por nombre (sin distinción de mayúsculas y minúsculas)
@@ -37,8 +52,21 @@ public class ClientRepository  {
 
     // Método para buscar un cliente por email
     public Client findByEmail(String email) {
-        // Aquí puedes buscar el cliente por email si tienes un índice global secundario en DynamoDB para el email.
-        return dynamoDBMapper.load(Client.class, email);
+        // Crear el mapa de valores de expresión
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":email", new AttributeValue().withS(email));
+
+        // Crear la expresión de la consulta
+        DynamoDBQueryExpression<Client> queryExpression = new DynamoDBQueryExpression<Client>()
+                .withIndexName("EmailIndex") // Especificamos el índice secundario "EmailIndex"
+                .withConsistentRead(false) // No es necesario tener consistencia en la lectura
+                .withKeyConditionExpression("email = :email") // Utilizamos el email como clave
+                .withExpressionAttributeValues(eav);
+
+        // Realizar la consulta
+        List<Client> clients = dynamoDBMapper.query(Client.class, queryExpression);
+
+        return clients.isEmpty() ? null : clients.get(0);
     }
 }
 

@@ -23,7 +23,7 @@ public class DynamoDBConfig {
         return AmazonDynamoDBClient.builder()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-east-1"))
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("\n" +
-                        "sdkg06", "0wbbpf")))
+                        "admin", "admin")))
                 .build();
     }
 
