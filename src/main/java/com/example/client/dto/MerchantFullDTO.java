@@ -10,10 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MerchantDTO {
+public class MerchantFullDTO {
 
     private String id;
     private String name;
     private String address;
+    private String idCliente;
     private MerchantType merchantType;
 }
