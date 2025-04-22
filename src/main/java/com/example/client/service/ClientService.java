@@ -27,18 +27,14 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
-
-    // Método para obtener un cliente por ID con opción de "simpleOutput"
     public Client getClientById(String id) {
         return clientRepository.findById(id);
     }
 
-    // Método para buscar clientes por nombre
     public List<Client> findClientsByName(String name) {
         return clientRepository.findByName(name);
     }
 
-    // Método para buscar un cliente por su email
     public Client findClientByEmail(String email) {
         return clientRepository.findByEmail(email);
     }

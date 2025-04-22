@@ -1,6 +1,5 @@
 package com.example.client.entity;
 
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
