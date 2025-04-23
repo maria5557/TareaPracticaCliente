@@ -122,17 +122,16 @@ public class ClientController {
         return ResponseEntity.ok(ClientOutputMapper.INSTANCE.clientToClientDTO(updatedClient));
     }
 
+    //Conocer si existe un merchant dado su ID
     @GetMapping("/merchant/{merchantId}")
     public ResponseEntity<Void> checkMerchantExists(@PathVariable String merchantId) {
         try {
             // Llamada al microservicio de merchant para obtener el merchant por ID
             MerchantOutputDTO merchant = merchantClient.findMerchantById(merchantId);
 
-            // Si el merchant existe, devolvemos 200 OK
             if (merchant != null) {
                 return ResponseEntity.ok().build();
             } else {
-                // Si el merchant no existe, devolvemos 404 Not Found
                 return ResponseEntity.notFound().build();
             }
 
@@ -147,19 +146,19 @@ public class ClientController {
             @PathVariable String clientId,
             @PathVariable String merchantId) {
 
-        // 1. Verificamos que el cliente exista
+        // Verificamos que el cliente exista
         Client client = clientService.getClientById(clientId);
         if (client == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         try {
-            // 2. Verificamos que el merchant exista
+            // Verificamos que el merchant exista
             MerchantOutputDTO merchantOutputDTO = merchantClient.findMerchantById(merchantId);
             if (merchantOutputDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            // 3. Convertimos MerchantDTO a MerchantObject y lo añadimos a la lista
+            // Convertimos MerchantDTO a MerchantObject y lo añadimos a la lista
             MerchantObject merchantObject = new MerchantObject(
                     merchantOutputDTO.getId(),
                     merchantOutputDTO.getName()
@@ -175,20 +174,15 @@ public class ClientController {
 
             client.getMerchants().add(merchantObject);
 
-            // 4. Guardamos el cliente actualizado
+            // Guardamos el cliente actualizado
             Client updatedClient = clientService.saveClient(client);
 
-            // Actualizar merchant con idCliente en MS merchant
+            // Actualizamos merchant con idCliente en MS merchant
             merchantOutputDTO.setIdCliente(clientId);
             merchantClient.updateMerchant(merchantId, merchantOutputDTO);
 
-            //de prueba
-            System.out.println("id del cliente: " + merchantOutputDTO.getIdCliente());
-            MerchantOutputDTO merchantOutputDTO2 = merchantClient.findMerchantById(merchantId);
-            System.out.println("id del cliente: " + merchantOutputDTO2.getIdCliente());
 
-
-            // 5. Devolvemos el cliente actualizado
+            // Devolvemos el cliente actualizado
             ClientMerchantOutputDTO clientMerchantOutputDTO = ClientMerchantMapper.INSTANCE.clientToClientMerchantDTO(updatedClient);
             return ResponseEntity.ok(clientMerchantOutputDTO);
 
@@ -197,7 +191,6 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 
     @GetMapping("/{id}/merchants")
