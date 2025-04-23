@@ -1,11 +1,13 @@
 package com.example.client.controller;
 
+import com.example.client.dto.ClientInputDTO;
 import com.example.client.dto.ClientMerchantOutputDTO;
 import com.example.client.dto.ClientOutputDTO;
 import com.example.client.dto.MerchantFullDTO;
 import com.example.client.entity.Client;
 import com.example.client.feign.MerchantClient;
-import com.example.client.mappers.ClientMapper;
+import com.example.client.mappers.ClientInputMapper;
+import com.example.client.mappers.ClientOutputMapper;
 import com.example.client.mappers.ClientMerchantMapper;
 import com.example.client.model.MerchantObject;
 import com.example.client.service.ClientService;
@@ -34,12 +36,10 @@ public class ClientController {
     // Endpoint para crear un cliente
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ClientOutputDTO> createClient(@RequestBody ClientOutputDTO clientOutputDTO) {
-
-        Client savedClient = clientService.createClient(ClientMapper.INSTANCE.clientDTOToClient(clientOutputDTO));
-        return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(savedClient));
+    public ResponseEntity<ClientOutputDTO> createClient(@RequestBody @Valid ClientInputDTO clientInputDTO) {
+        Client savedClient = clientService.createClient(ClientInputMapper.INSTANCE.clientInputToClient(clientInputDTO));
+        return ResponseEntity.ok(ClientOutputMapper.INSTANCE.clientToClientDTO(savedClient));
     }
-
 
 
     // Endpoint para obtener un cliente por ID con opción de "simpleOutput"
@@ -55,7 +55,7 @@ public class ClientController {
             if (StringUtils.equals("simpleOutput", simpleOutput)) {
                 return ResponseEntity.ok(new ClientOutputDTO(client.getId(), null, null, null, null, null));
             } else {
-                return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(client));
+                return ResponseEntity.ok(ClientOutputMapper.INSTANCE.clientToClientDTO(client));
             }
         }
 
@@ -76,7 +76,7 @@ public class ClientController {
 
         // Convertimos las entidades Client a ClientDTO
         List<ClientOutputDTO> clientOutputDTOS = clients.stream()
-                .map(ClientMapper.INSTANCE::clientToClientDTO)
+                .map(ClientOutputMapper.INSTANCE::clientToClientDTO)
                 .collect(Collectors.toList());
 
         // Retornamos los clientes como un ResponseEntity con un código 200 OK
@@ -90,7 +90,7 @@ public class ClientController {
     public ResponseEntity<ClientOutputDTO> findClientByEmail(
             @PathVariable @Valid @Pattern(regexp = "^(.+)@(.+)$", message = "Email inválido") String email) {
         Client client = clientService.findClientByEmail(email);
-        ClientOutputDTO clientOutputDTO = ClientMapper.INSTANCE.clientToClientDTO(client);
+        ClientOutputDTO clientOutputDTO = ClientOutputMapper.INSTANCE.clientToClientDTO(client);
         return client != null ? ResponseEntity.ok(clientOutputDTO) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
@@ -98,7 +98,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<ClientOutputDTO> updateClient(
             @PathVariable String id,
-            @RequestBody @Valid ClientOutputDTO clientOutputDTO) {
+            @RequestBody @Valid ClientInputDTO clientInputDTO) {
 
         // Buscamos el cliente en la base de datos
         Client existingClient = clientService.getClientById(id);
@@ -109,17 +109,17 @@ public class ClientController {
         }
 
         // Actualizamos los campos del cliente con los nuevos datos del DTO
-        existingClient.setName(clientOutputDTO.getName());
-        existingClient.setSurname(clientOutputDTO.getSurname());
-        existingClient.setCifNifNie(clientOutputDTO.getCifNifNie());
-        existingClient.setPhone(clientOutputDTO.getPhone());
-        existingClient.setEmail(clientOutputDTO.getEmail());
+        existingClient.setName(clientInputDTO.getName());
+        existingClient.setSurname(clientInputDTO.getSurname());
+        existingClient.setCifNifNie(clientInputDTO.getCifNifNie());
+        existingClient.setPhone(clientInputDTO.getPhone());
+        existingClient.setEmail(clientInputDTO.getEmail());
 
         // Guardamos el cliente actualizado
         Client updatedClient = clientService.saveClient(existingClient);
 
         // Retornamos el cliente actualizado como respuesta
-        return ResponseEntity.ok(ClientMapper.INSTANCE.clientToClientDTO(updatedClient));
+        return ResponseEntity.ok(ClientOutputMapper.INSTANCE.clientToClientDTO(updatedClient));
     }
 
     @GetMapping("/merchant/{merchantId}")
