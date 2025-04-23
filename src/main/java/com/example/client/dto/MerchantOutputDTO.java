@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MerchantFullDTO {
+public class MerchantOutputDTO {
 
     private String id;
     private String name;

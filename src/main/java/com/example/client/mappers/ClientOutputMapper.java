@@ -12,9 +12,4 @@ public interface ClientOutputMapper {
 
     // Mapea la entidad Client a ClientDTO
     ClientOutputDTO clientToClientDTO(Client client);
-
-    // Mapea el DTO ClientDTO a la entidad Client
-    Client clientDTOToClient(ClientOutputDTO clientOutputDTO);
-
-
 }

@@ -13,7 +13,4 @@ public interface ClientInputMapper {
 
     Client clientInputToClient(ClientInputDTO clientInputDTO);
 
-    ClientInputDTO clientToClientInput(Client client);
-
-
 }

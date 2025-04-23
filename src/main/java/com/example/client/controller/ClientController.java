@@ -3,7 +3,7 @@ package com.example.client.controller;
 import com.example.client.dto.ClientInputDTO;
 import com.example.client.dto.ClientMerchantOutputDTO;
 import com.example.client.dto.ClientOutputDTO;
-import com.example.client.dto.MerchantFullDTO;
+import com.example.client.dto.MerchantOutputDTO;
 import com.example.client.entity.Client;
 import com.example.client.feign.MerchantClient;
 import com.example.client.mappers.ClientInputMapper;
@@ -126,7 +126,7 @@ public class ClientController {
     public ResponseEntity<Void> checkMerchantExists(@PathVariable String merchantId) {
         try {
             // Llamada al microservicio de merchant para obtener el merchant por ID
-            MerchantFullDTO merchant = merchantClient.findMerchantById(merchantId);
+            MerchantOutputDTO merchant = merchantClient.findMerchantById(merchantId);
 
             // Si el merchant existe, devolvemos 200 OK
             if (merchant != null) {
@@ -155,14 +155,14 @@ public class ClientController {
 
         try {
             // 2. Verificamos que el merchant exista
-            MerchantFullDTO merchantFullDTO = merchantClient.findMerchantById(merchantId);
-            if (merchantFullDTO == null) {
+            MerchantOutputDTO merchantOutputDTO = merchantClient.findMerchantById(merchantId);
+            if (merchantOutputDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             // 3. Convertimos MerchantDTO a MerchantObject y lo añadimos a la lista
             MerchantObject merchantObject = new MerchantObject(
-                    merchantFullDTO.getId(),
-                    merchantFullDTO.getName()
+                    merchantOutputDTO.getId(),
+                    merchantOutputDTO.getName()
             );
 
             List<MerchantObject> merchantList = client.getMerchants();
@@ -179,13 +179,13 @@ public class ClientController {
             Client updatedClient = clientService.saveClient(client);
 
             // Actualizar merchant con idCliente en MS merchant
-            merchantFullDTO.setIdCliente(clientId);
-            merchantClient.updateMerchant(merchantId, merchantFullDTO);
+            merchantOutputDTO.setIdCliente(clientId);
+            merchantClient.updateMerchant(merchantId, merchantOutputDTO);
 
             //de prueba
-            System.out.println("id del cliente: " + merchantFullDTO.getIdCliente());
-            MerchantFullDTO merchantFullDTO2 = merchantClient.findMerchantById(merchantId);
-            System.out.println("id del cliente: " + merchantFullDTO2.getIdCliente());
+            System.out.println("id del cliente: " + merchantOutputDTO.getIdCliente());
+            MerchantOutputDTO merchantOutputDTO2 = merchantClient.findMerchantById(merchantId);
+            System.out.println("id del cliente: " + merchantOutputDTO2.getIdCliente());
 
 
             // 5. Devolvemos el cliente actualizado
