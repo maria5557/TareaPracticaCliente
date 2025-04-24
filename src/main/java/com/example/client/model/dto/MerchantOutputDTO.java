@@ -1,4 +1,4 @@
-package com.example.client.dto;
+package com.example.client.model.dto;
 
 import com.example.client.model.MerchantType;
 import lombok.AllArgsConstructor;

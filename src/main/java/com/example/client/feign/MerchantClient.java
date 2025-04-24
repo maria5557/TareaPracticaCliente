@@ -1,6 +1,6 @@
 package com.example.client.feign;
 
-import com.example.client.dto.MerchantOutputDTO;
+import com.example.client.model.dto.MerchantOutputDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
