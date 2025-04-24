@@ -168,8 +168,6 @@ public class ClientController {
 
         try {
             MerchantOutputDTO merchantOutputDTO = merchantClient.findMerchantById(merchantId);
-            System.out.println("he llegado hasta aqui");
-            System.out.println("El merchant es " + merchantOutputDTO.getName());
             if (merchantOutputDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
@@ -194,7 +192,6 @@ public class ClientController {
             return ResponseEntity.ok(ClientMerchantMapper.INSTANCE.clientToClientMerchantDTO(updatedClient));
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
