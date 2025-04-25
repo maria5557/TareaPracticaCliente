@@ -31,6 +31,7 @@ public class ClientService {
         client.setId(UUID.randomUUID().toString());
         client.setPk("clientEntity");
         client.setSk("documentID#" + client.getCifNifNie());
+        client.setNameLowerCase(client.getName().toLowerCase());  // Guardar el nombre en minúsculas
         return ClientOutputMapper.INSTANCE.clientToClientDTO(clientRepository.save(client));
     }
 
@@ -62,6 +63,7 @@ public class ClientService {
         if (client == null) return null;
 
         client.setName(dto.getName());
+        client.setNameLowerCase(dto.getName().toLowerCase());  // Guardar el nombre en minúsculas
         client.setSurname(dto.getSurname());
         client.setCifNifNie(dto.getCifNifNie());
         client.setPhone(dto.getPhone());

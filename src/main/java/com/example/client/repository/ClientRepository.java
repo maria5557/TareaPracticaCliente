@@ -41,13 +41,29 @@ public class ClientRepository  {
         return clients.isEmpty() ? null : clients.get(0);
     }
 
-    // Método para buscar clientes por nombre (sin distinción de mayúsculas y minúsculas)
+    // Metodo para buscar clientes por nombre (sin distinción de mayúsculas y minúsculas)
     public List<Client> findByName(String name) {
 
-        List<Client> allClients = dynamoDBMapper.scan(Client.class, new DynamoDBScanExpression());
-        return allClients.stream()
-                .filter(client -> client.getName().toLowerCase().contains(name.toLowerCase()))
-                .collect(Collectors.toList());
+        // Convertimos el nombre a minúsculas para la búsqueda
+        String lowerCaseName = name.toLowerCase();
+
+        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        expressionAttributeValues.put(":pk", new AttributeValue().withS("clientEntity"));
+        expressionAttributeValues.put(":name", new AttributeValue().withS(lowerCaseName));
+
+        Map<String, String> expressionAttributeNames = new HashMap<>();
+        expressionAttributeNames.put("#nameLowerCase", "nameLowerCase");
+
+        // Crear la expresión de la consulta
+        DynamoDBQueryExpression<Client> queryExpression = new DynamoDBQueryExpression<Client>()
+                .withKeyConditionExpression("PK = :pk")
+                .withExpressionAttributeValues(expressionAttributeValues)
+                .withExpressionAttributeNames(expressionAttributeNames)
+                .withFilterExpression("contains(#nameLowerCase, :name)")
+                .withConsistentRead(false);
+
+        // Realizamos la consulta
+        return dynamoDBMapper.query(Client.class, queryExpression);
     }
 
     // Método para buscar un cliente por email

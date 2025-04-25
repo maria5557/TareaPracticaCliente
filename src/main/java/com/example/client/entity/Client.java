@@ -20,6 +20,7 @@ public class Client extends MainTable {
     private String cifNifNie;
     private String phone;
     private String email;
+    private String nameLowerCase;
 
     @DynamoDBTypeConverted(converter = MerchantObjectConverter.class)
     private List<MerchantObject> merchants = new ArrayList<>();
