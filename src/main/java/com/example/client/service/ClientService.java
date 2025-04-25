@@ -68,8 +68,6 @@ public class ClientService {
         client.setCifNifNie(dto.getCifNifNie());
         client.setPhone(dto.getPhone());
         client.setEmail(dto.getEmail());
-        client.setPk("clientEntity");
-        client.setSk("documentID#" + client.getCifNifNie());
 
         return ClientOutputMapper.INSTANCE.clientToClientDTO(clientRepository.save(client));
     }
