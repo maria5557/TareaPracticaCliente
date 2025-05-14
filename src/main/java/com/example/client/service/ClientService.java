@@ -104,5 +104,23 @@ public class ClientService {
         Client client = clientRepository.findById(id);
         return client != null ? ClientMerchantMapper.INSTANCE.clientToClientMerchantDTO(client) : null;
     }
+
+    public List<ClientOutputDTO> getAllClients() {
+        return clientRepository.findAllClients()
+                .stream()
+                .map(ClientOutputMapper.INSTANCE::clientToClientDTO)
+                .collect(Collectors.toList());
+    }
+
+    public boolean deleteClient(String id) {
+        Client client = clientRepository.findById(id);
+        if (client == null) {
+            return false;
+        }
+        clientRepository.delete(client);
+        return true;
+    }
+
+
 }
 

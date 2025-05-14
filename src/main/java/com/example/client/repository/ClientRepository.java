@@ -84,6 +84,23 @@ public class ClientRepository  {
 
         return clients.isEmpty() ? null : clients.get(0);
     }
+
+    public List<Client> findAllClients() {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":pk", new AttributeValue().withS("clientEntity"));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("PK = :pk")
+                .withExpressionAttributeValues(eav);
+
+        return dynamoDBMapper.scan(Client.class, scanExpression);
+    }
+
+    public void delete(Client client) {
+        dynamoDBMapper.delete(client);
+    }
+
+
 }
 
 
