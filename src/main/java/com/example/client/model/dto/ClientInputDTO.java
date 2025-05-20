@@ -28,4 +28,6 @@ public class ClientInputDTO {
 
     @ApiModelProperty(value = "Correo electrónico del cliente")
     private String email;
+    private String password;
+
 }

@@ -1,8 +1,7 @@
 package com.example.client.controller;
 
-import com.example.client.model.dto.ClientInputDTO;
-import com.example.client.model.dto.ClientMerchantOutputDTO;
-import com.example.client.model.dto.ClientOutputDTO;
+import com.example.client.model.dto.*;
+import com.example.client.service.AuthService;
 import com.example.client.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +23,15 @@ import java.util.NoSuchElementException;
 public class ClientController {
 
     private final ClientService clientService;
+    private final AuthService authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+        String token = authService.login(loginRequest);
+        LoginResponseDTO dto = new LoginResponseDTO(token);
+        return ResponseEntity.ok(dto);
+    }
+
 
     @ApiOperation(value = "Crear un nuevo cliente")
     @PostMapping
@@ -40,6 +48,7 @@ public class ClientController {
         if (dto == null) {
             throw new NoSuchElementException("Cliente no encontrado con el ID: " + id);
         }
+        System.out.println("El cliente que devuelvo es: " + dto);
         return ResponseEntity.ok(dto);
     }
 
@@ -50,6 +59,8 @@ public class ClientController {
         if (result.isEmpty()) {
             throw new NoSuchElementException("No se encontraron clientes con el nombre: " + name);
         }
+        System.out.println("El cliente que devuelvo es: " + result.size());
+
         return ResponseEntity.ok(result);
     }
 
